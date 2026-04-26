@@ -236,12 +236,6 @@ interface ISysProxyConfig {
   pacScript?: string
 }
 
-interface IAppProxyRule {
-  processName: string
-  processPath: string
-  enabled: boolean
-}
-
 interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha' | 'mihomo-smart' | 'mihomo-specific'
   specificVersion?: string
@@ -291,8 +285,6 @@ interface IAppConfig {
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
   usageCardStatus?: CardStatus
-  appsCardStatus?: CardStatus
-  appProxyRules?: IAppProxyRule[]
   githubToken?: string
   useSubStore: boolean
   subStoreHost?: string

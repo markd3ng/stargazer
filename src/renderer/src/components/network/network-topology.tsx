@@ -267,7 +267,7 @@ const NetworkTopologyCard: React.FC = () => {
     }
     window.electron.ipcRenderer.on('mihomoConnections', handler)
     return () => {
-      window.electron.ipcRenderer.removeListener('mihomoConnections', handler)
+      window.electron.ipcRenderer.removeAllListeners('mihomoConnections')
     }
   }, [isPaused])
 

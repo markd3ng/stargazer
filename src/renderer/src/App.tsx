@@ -34,7 +34,6 @@ import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
 import NetworkCard from '@renderer/components/sider/network-card'
 import UsageCard from '@renderer/components/sider/usage-card'
-import AppsCard from '@renderer/components/sider/apps-card'
 import { useTrafficLogger } from '@renderer/hooks/use-traffic-logger'
 import { createTourDriver, getDriver, startTourIfNeeded } from '@renderer/utils/tour'
 import 'driver.js/dist/driver.css'
@@ -54,7 +53,6 @@ const ALL_SIDER_KEYS = [
   'resource',
   'override',
   'connection',
-  'apps',
   'mihomo',
   'dns',
   'sniff',
@@ -88,7 +86,6 @@ const App: React.FC = () => {
       'resource',
       'override',
       'connection',
-      'apps',
       'mihomo',
       'dns',
       'sniff',
@@ -191,7 +188,6 @@ const App: React.FC = () => {
     proxy: 'proxies',
     mihomo: 'mihomo',
     connection: 'connections',
-    apps: 'apps',
     dns: 'dns',
     sniff: 'sniffer',
     log: 'logs',
@@ -210,7 +206,6 @@ const App: React.FC = () => {
     proxy: ProxyCard,
     mihomo: MihomoCoreCard,
     connection: ConnCard,
-    apps: AppsCard,
     dns: DNSCard,
     sniff: SniffCard,
     log: LogCard,

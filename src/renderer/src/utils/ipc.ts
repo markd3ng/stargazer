@@ -46,7 +46,6 @@ interface IpcApi {
   patchAppConfig: (patch: Partial<IAppConfig>) => Promise<void>
   getControledMihomoConfig: (force?: boolean) => Promise<Partial<IMihomoConfig>>
   patchControledMihomoConfig: (patch: Partial<IMihomoConfig>) => Promise<void>
-  getAppProxyRules: () => Promise<IAppProxyRule[]>
   resetAppConfig: () => Promise<void>
   // Profile
   getProfileConfig: (force?: boolean) => Promise<IProfileConfig>
@@ -204,7 +203,6 @@ export const {
   patchAppConfig,
   getControledMihomoConfig,
   patchControledMihomoConfig,
-  getAppProxyRules,
   resetAppConfig,
   // Profile
   getProfileConfig,

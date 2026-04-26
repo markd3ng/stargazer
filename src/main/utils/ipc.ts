@@ -33,7 +33,6 @@ import {
   patchAppConfig,
   getControledMihomoConfig,
   patchControledMihomoConfig,
-  getAppProxyRules,
   getProfileConfig,
   getCurrentProfileItem,
   getProfileItem,
@@ -250,7 +249,7 @@ const asyncHandlers: Record<string, AsyncFn> = {
   patchAppConfig,
   getControledMihomoConfig,
   patchControledMihomoConfig,
-  getAppProxyRules,
+  // Profile
   getProfileConfig,
   setProfileConfig,
   getCurrentProfileItem,

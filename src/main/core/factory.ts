@@ -73,9 +73,7 @@ export async function generateProfile(): Promise<string | undefined> {
   const overrideIds = await getOrderedOverrideIds(current)
   const profileWithNormalOverride = await applyOverrides(baseProfile, overrideIds.normal)
   const profileWithRuleOverride = await applyRuleOverride(current, profileWithNormalOverride)
-  const { appProxyRules = [] } = await getAppConfig()
-  const profileWithAppProxy = applyAppProxyRules(profileWithRuleOverride, appProxyRules)
-  const currentProfile = await applyOverrides(profileWithAppProxy, overrideIds.smart)
+  const currentProfile = await applyOverrides(profileWithRuleOverride, overrideIds.smart)
   let controledMihomoConfig = await getControledMihomoConfig()
 
   // 根据开关状态过滤控制配置
@@ -115,18 +113,6 @@ export async function generateProfile(): Promise<string | undefined> {
     runtimeConfigStr
   )
   return current
-}
-
-function applyAppProxyRules(profile: IMihomoConfig, rules: IAppProxyRule[]): IMihomoConfig {
-  const disabledApps = rules.filter(
-    (r) => !r.enabled && r.processName && !r.processName.includes(',')
-  )
-  if (disabledApps.length === 0) return profile
-
-  const profileRules = (profile.rules || []) as unknown as string[]
-  const processRules = disabledApps.map((r) => `PROCESS-NAME,${r.processName},DIRECT`)
-  profile.rules = [...processRules, ...profileRules] as unknown as []
-  return profile
 }
 
 async function applyRuleOverride(

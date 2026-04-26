@@ -39,8 +39,3 @@ export async function patchAppConfig(patch: Partial<IAppConfig>): Promise<void> 
   })
   await appConfigWriteQueue
 }
-
-export async function getAppProxyRules(): Promise<IAppProxyRule[]> {
-  const { appProxyRules = [] } = await getAppConfig()
-  return appProxyRules
-}
