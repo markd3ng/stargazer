@@ -53,20 +53,21 @@ const RuleProvider: React.FC = () => {
   }, [showDetails.title])
 
   const { data, mutate } = useSWR('mihomoRuleProviders', mihomoRuleProviders)
-  const providers = useMemo(() => {
+  const allProviders = useMemo(() => {
     if (!data || !data.providers) return []
-    return Object.values(data.providers)
-      .filter((p) => !filter || includesIgnoreCase(p.name, filter))
-      .sort((a, b) => {
-        if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
-          return -1
-        }
-        if (a.vehicleType !== 'File' && b.vehicleType === 'File') {
-          return 1
-        }
-        return 0
-      })
-  }, [data, filter])
+    return Object.values(data.providers).sort((a, b) => {
+      if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
+        return -1
+      }
+      if (a.vehicleType !== 'File' && b.vehicleType === 'File') {
+        return 1
+      }
+      return 0
+    })
+  }, [data])
+  const providers = useMemo(() => {
+    return allProviders.filter((p) => !filter || includesIgnoreCase(p.name, filter))
+  }, [allProviders, filter])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
 
   const onUpdate = async (name: string, index: number): Promise<void> => {
@@ -87,7 +88,7 @@ const RuleProvider: React.FC = () => {
     }
   }
 
-  if (!providers.length) {
+  if (!allProviders.length) {
     return null
   }
 
@@ -137,68 +138,72 @@ const RuleProvider: React.FC = () => {
           </Button>
         </div>
       </SettingItem>
-      {providers.map((provider, index) => (
-        <Fragment key={provider.name}>
-          <SettingItem
-            title={provider.name}
-            actions={
-              <Chip className="ml-2" size="sm">
-                {provider.ruleCount}
-              </Chip>
-            }
-          >
-            <div className="flex h-[32px] leading-[32px] text-foreground-500">
-              <div>{dayjs(provider.updatedAt).fromNow()}</div>
-              <Button
-                isIconOnly
-                title={
-                  provider.vehicleType === 'File'
-                    ? t('common.editor.edit')
-                    : t('common.viewer.view')
-                }
-                className="ml-2"
-                size="sm"
-                onPress={() => {
-                  setShowDetails({
-                    show: false,
-                    privderType: 'rule-providers',
-                    path: provider.name,
-                    type: provider.vehicleType,
-                    title: provider.name,
-                    format: provider.format,
-                    behavior: provider.behavior || 'domain'
-                  })
-                }}
-              >
-                {provider.vehicleType === 'File' ? (
-                  <MdEditDocument className={`text-lg`} />
-                ) : (
-                  <CgLoadbarDoc className={`text-lg`} />
-                )}
-              </Button>
-              <Button
-                isIconOnly
-                title={t('common.updater.update')}
-                className="ml-2"
-                size="sm"
-                onPress={() => {
-                  onUpdate(provider.name, index)
-                }}
-              >
-                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
-              </Button>
-            </div>
-          </SettingItem>
-          <SettingItem
-            title={<div className="text-foreground-500">{provider.format}</div>}
-            divider={index !== providers.length - 1}
-          >
-            <div className="h-[32px] leading-[32px] text-foreground-500">
-              {provider.vehicleType}::{provider.behavior}
-            </div>
-          </SettingItem>
-        </Fragment>
-      ))}
+      {providers.length ? (
+        providers.map((provider, index) => (
+          <Fragment key={provider.name}>
+            <SettingItem
+              title={provider.name}
+              actions={
+                <Chip className="ml-2" size="sm">
+                  {provider.ruleCount}
+                </Chip>
+              }
+            >
+              <div className="flex h-8 leading-8 text-foreground-500">
+                <div>{dayjs(provider.updatedAt).fromNow()}</div>
+                <Button
+                  isIconOnly
+                  title={
+                    provider.vehicleType === 'File'
+                      ? t('common.editor.edit')
+                      : t('common.viewer.view')
+                  }
+                  className="ml-2"
+                  size="sm"
+                  onPress={() => {
+                    setShowDetails({
+                      show: false,
+                      privderType: 'rule-providers',
+                      path: provider.name,
+                      type: provider.vehicleType,
+                      title: provider.name,
+                      format: provider.format,
+                      behavior: provider.behavior || 'domain'
+                    })
+                  }}
+                >
+                  {provider.vehicleType === 'File' ? (
+                    <MdEditDocument className={`text-lg`} />
+                  ) : (
+                    <CgLoadbarDoc className={`text-lg`} />
+                  )}
+                </Button>
+                <Button
+                  isIconOnly
+                  title={t('common.updater.update')}
+                  className="ml-2"
+                  size="sm"
+                  onPress={() => {
+                    onUpdate(provider.name, index)
+                  }}
+                >
+                  <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            </SettingItem>
+            <SettingItem
+              title={<div className="text-foreground-500">{provider.format}</div>}
+              divider={index !== providers.length - 1}
+            >
+              <div className="h-8 leading-8 text-foreground-500">
+                {provider.vehicleType}::{provider.behavior}
+              </div>
+            </SettingItem>
+          </Fragment>
+        ))
+      ) : (
+        <div className="py-6 text-center text-sm text-foreground/50">{t('traffic.noData')}</div>
+      )}
     </SettingCard>
   )
 }
