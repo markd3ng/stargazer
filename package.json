@@ -1,6 +1,6 @@
 {
   "name": "mihomo-party",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "description": "Clash Party",
   "type": "module",
   "main": "./out/main/index.js",
