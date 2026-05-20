@@ -22,7 +22,10 @@ import {
 } from '@heroui/react'
 import { calcTraffic } from '@renderer/utils/calc'
 import ConnectionItem from '@renderer/components/connections/connection-item'
-import ConnectionTable from '@renderer/components/connections/connection-table'
+import ConnectionTable, {
+  CONNECTION_TABLE_COLUMNS,
+  DEFAULT_CONNECTION_TABLE_COLUMN_KEYS
+} from '@renderer/components/connections/connection-table'
 import { Virtuoso } from 'react-virtuoso'
 import dayjs from '@renderer/utils/dayjs'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
@@ -53,20 +56,7 @@ const Connections: React.FC = () => {
     connectionDirection = 'asc',
     connectionOrderBy = 'time',
     connectionViewMode = 'list',
-    connectionTableColumns = [
-      'status',
-      'establishTime',
-      'type',
-      'host',
-      'process',
-      'rule',
-      'proxyChain',
-      'remoteDestination',
-      'uploadSpeed',
-      'downloadSpeed',
-      'upload',
-      'download'
-    ],
+    connectionTableColumns = DEFAULT_CONNECTION_TABLE_COLUMN_KEYS,
     connectionTableColumnWidths,
     connectionTableSortColumn,
     connectionTableSortDirection,
@@ -104,6 +94,14 @@ const Connections: React.FC = () => {
     allConnectionsRef.current = allConnections
   }, [activeConnections, allConnections])
 
+  useEffect(() => {
+    setViewMode(connectionViewMode)
+  }, [connectionViewMode])
+
+  useEffect(() => {
+    setVisibleColumns(new Set(connectionTableColumns))
+  }, [connectionTableColumns])
+
   const selectedConnection = useMemo(() => {
     if (!selected) return undefined
     return (
@@ -121,9 +119,9 @@ const Connections: React.FC = () => {
   )
 
   const handleSortChange = useCallback(
-    async (column: string | null, direction: 'asc' | 'desc') => {
+    async (column: string, direction: 'asc' | 'desc') => {
       await patchAppConfig({
-        connectionTableSortColumn: column || undefined,
+        connectionTableSortColumn: column,
         connectionTableSortDirection: direction
       })
     },
@@ -427,9 +425,14 @@ const Connections: React.FC = () => {
     }
 
     return (): void => {
-      window.electron.ipcRenderer.removeAllListeners('mihomoConnections')
+      window.electron.ipcRenderer.removeListener('mihomoConnections', handler)
     }
   }, [isPaused])
+
+  const openConnectionDetail = useCallback((connection: IMihomoConnectionDetail): void => {
+    setSelected(connection)
+    setIsDetailModalOpen(true)
+  }, [])
   const togglePause = useCallback(() => {
     setIsPaused((prev) => !prev)
   }, [])
@@ -620,38 +623,17 @@ const Connections: React.FC = () => {
                 selectionMode="multiple"
                 selectedKeys={visibleColumns}
                 onSelectionChange={async (keys) => {
-                  const newColumns = Array.from(keys) as string[]
+                  const newColumns =
+                    keys === 'all'
+                      ? CONNECTION_TABLE_COLUMNS.map((column) => column.key)
+                      : Array.from(keys).map(String)
                   setVisibleColumns(new Set(newColumns))
                   await patchAppConfig({ connectionTableColumns: newColumns })
                 }}
               >
-                <DropdownItem key="status">{t('connections.detail.status')}</DropdownItem>
-                <DropdownItem key="establishTime">
-                  {t('connections.detail.establishTime')}
-                </DropdownItem>
-                <DropdownItem key="type">{t('connections.detail.connectionType')}</DropdownItem>
-                <DropdownItem key="host">{t('connections.detail.host')}</DropdownItem>
-                <DropdownItem key="sniffHost">{t('connections.detail.sniffHost')}</DropdownItem>
-                <DropdownItem key="process">{t('connections.detail.processName')}</DropdownItem>
-                <DropdownItem key="processPath">{t('connections.detail.processPath')}</DropdownItem>
-                <DropdownItem key="rule">{t('connections.detail.rule')}</DropdownItem>
-                <DropdownItem key="proxyChain">{t('connections.detail.proxyChain')}</DropdownItem>
-                <DropdownItem key="sourceIP">{t('connections.detail.sourceIP')}</DropdownItem>
-                <DropdownItem key="sourcePort">{t('connections.detail.sourcePort')}</DropdownItem>
-                <DropdownItem key="destinationPort">
-                  {t('connections.detail.destinationPort')}
-                </DropdownItem>
-                <DropdownItem key="inboundIP">{t('connections.detail.inboundIP')}</DropdownItem>
-                <DropdownItem key="inboundPort">{t('connections.detail.inboundPort')}</DropdownItem>
-                <DropdownItem key="uploadSpeed">{t('connections.uploadSpeed')}</DropdownItem>
-                <DropdownItem key="downloadSpeed">{t('connections.downloadSpeed')}</DropdownItem>
-                <DropdownItem key="upload">{t('connections.uploadAmount')}</DropdownItem>
-                <DropdownItem key="download">{t('connections.downloadAmount')}</DropdownItem>
-                <DropdownItem key="dscp">{t('connections.detail.dscp')}</DropdownItem>
-                <DropdownItem key="remoteDestination">
-                  {t('connections.detail.remoteDestination')}
-                </DropdownItem>
-                <DropdownItem key="dnsMode">{t('connections.detail.dnsMode')}</DropdownItem>
+                {CONNECTION_TABLE_COLUMNS.map((column) => (
+                  <DropdownItem key={column.key}>{t(column.labelKey)}</DropdownItem>
+                ))}
               </DropdownMenu>
             </Dropdown>
           )}
@@ -709,13 +691,12 @@ const Connections: React.FC = () => {
         ) : (
           <ConnectionTable
             connections={filteredConnections}
-            setSelected={setSelected}
-            setIsDetailModalOpen={setIsDetailModalOpen}
+            onOpenDetail={openConnectionDetail}
             close={closeConnection}
             visibleColumns={visibleColumns}
-            initialColumnWidths={connectionTableColumnWidths}
-            initialSortColumn={connectionTableSortColumn}
-            initialSortDirection={connectionTableSortDirection}
+            columnWidths={connectionTableColumnWidths}
+            sortColumn={connectionTableSortColumn}
+            sortDirection={connectionTableSortDirection}
             onColumnWidthChange={handleColumnWidthChange}
             onSortChange={handleSortChange}
           />
