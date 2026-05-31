@@ -211,7 +211,9 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, value, mono }) => (
 const IPPage: React.FC = () => {
   const { t } = useTranslation()
   const { appConfig, patchAppConfig } = useAppConfig()
-  const [provider, setProvider] = useState<IPProvider>('ip.sb')
+  const [provider, setProvider] = useState<IPProvider>(
+    (appConfig?.networkIPProvider as IPProvider) ?? 'ip.sb'
+  )
   const [ipInfo, setIpInfo] = useState<IPInfo | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -374,7 +376,10 @@ const IPPage: React.FC = () => {
       try {
         const data = await fetchIPInfo(IP_ENDPOINTS[target])
         setIpInfo(parseProvider(target, data as Record<string, unknown>))
-        if (p) setProvider(p)
+        if (p) {
+          setProvider(p)
+          patchAppConfig({ networkIPProvider: p })
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : t('network.fetchFailed'))
         setIpInfo(null)
@@ -382,7 +387,7 @@ const IPPage: React.FC = () => {
         setLoading(false)
       }
     },
-    [provider, t]
+    [patchAppConfig, provider, t]
   )
 
   useEffect(() => {

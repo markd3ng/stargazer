@@ -324,6 +324,7 @@ interface IAppConfig {
   delayTestUrl?: string
   delayTestTimeout?: number
   networkLatencyTargets?: INetworkLatencyTarget[]
+  networkIPProvider?: 'ip.sb' | 'ipwho.is' | 'ipapi.is'
   subscriptionTimeout?: number
   encryptedPassword?: number[]
   controlDns?: boolean
