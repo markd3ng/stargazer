@@ -5,9 +5,7 @@ import { promisify } from 'util'
 import path from 'path'
 import { app, dialog } from 'electron'
 import {
-  startPacServer,
-  startSubStoreBackendServer,
-  startSubStoreFrontendServer
+  startPacServer
 } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import {
@@ -40,7 +38,6 @@ import {
   profilesDir,
   resourcesFilesDir,
   rulesDir,
-  subStoreDir,
   themesDir
 } from './dirs'
 import { initLogger } from './logger'
@@ -106,8 +103,7 @@ async function initDirs(): Promise<void> {
     rulesDir(),
     mihomoWorkDir(),
     logDir(),
-    mihomoTestDir(),
-    subStoreDir()
+    mihomoTestDir()
   ]
 
   await Promise.all(
@@ -233,14 +229,6 @@ async function initFiles(): Promise<void> {
     {
       name: 'ASN.mmdb',
       targetDirs: [mihomoWorkDir(), mihomoTestDir()]
-    },
-    {
-      name: 'sub-store.bundle.cjs',
-      targetDirs: [mihomoWorkDir()]
-    },
-    {
-      name: 'sub-store-frontend',
-      targetDirs: [mihomoWorkDir()]
     }
   ]
 
@@ -286,27 +274,6 @@ async function cleanup(): Promise<void> {
     .map((log) => rm(path.join(logDir(), log)).catch(() => {}))
 
   await Promise.all([...cacheCleanup, ...logCleanup])
-}
-
-async function migrateSubStoreFiles(): Promise<void> {
-  const oldJsPath = path.join(mihomoWorkDir(), 'sub-store.bundle.js')
-  const newCjsPath = path.join(mihomoWorkDir(), 'sub-store.bundle.cjs')
-
-  if (existsSync(oldJsPath) && !existsSync(newCjsPath)) {
-    try {
-      await rename(oldJsPath, newCjsPath)
-    } catch (error) {
-      await initLogger.error('Failed to rename sub-store.bundle.js to sub-store.bundle.cjs', error)
-    }
-  }
-}
-
-// 迁移：添加 substore 到侧边栏
-async function migrateSiderOrder(): Promise<void> {
-  const { siderOrder = [], useSubStore = true } = await getAppConfig()
-  if (useSubStore && !siderOrder.includes('substore')) {
-    await patchAppConfig({ siderOrder: [...siderOrder, 'substore'] })
-  }
 }
 
 // 迁移：修复 appTheme
@@ -416,7 +383,6 @@ export async function initBasic(): Promise<void> {
     await initDirs()
     await initConfig()
     await migration()
-    await migrateSubStoreFiles()
 
     isInitBasicCompleted = true
   })()
@@ -466,9 +432,4 @@ export async function init(): Promise<void> {
 
   await Promise.all(initTasks)
   initDeeplink()
-}
-
-export async function startSubStoreServices(): Promise<void> {
-  await ensureRuntimeFiles()
-  await Promise.all([startSubStoreFrontendServer(), startSubStoreBackendServer()])
 }

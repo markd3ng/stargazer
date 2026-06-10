@@ -10,7 +10,6 @@ import i18next from 'i18next'
 import * as chromeRequest from '../utils/chromeRequest'
 import { parse, stringify } from '../utils/yaml'
 import { defaultProfile } from '../utils/template'
-import { subStorePort } from '../resolve/server'
 import { mihomoCloseAllConnections, mihomoHotReloadConfig } from '../core/mihomoApi'
 import { restartCore } from '../core/manager'
 import { generateProfile } from '../core/factory'
@@ -258,7 +257,6 @@ interface FetchOptions {
   userAgent: string
   authToken?: string
   timeout: number
-  substore: boolean
 }
 
 interface FetchResult {
@@ -270,7 +268,7 @@ const MAX_TIMER_DELAY_MS = 2_147_483_647
 const MAX_PROFILE_INTERVAL_MINUTES = Math.floor(MAX_TIMER_DELAY_MS / (60 * 1000))
 
 async function fetchAndValidateSubscription(options: FetchOptions): Promise<FetchResult> {
-  const { url, useProxy, mixedPort, userAgent, authToken, timeout, substore } = options
+  const { url, useProxy, mixedPort, userAgent, authToken, timeout } = options
 
   const headers: Record<string, string> = {
     'User-Agent': userAgent,
@@ -279,20 +277,19 @@ async function fetchAndValidateSubscription(options: FetchOptions): Promise<Fetc
   if (authToken) headers['Authorization'] = authToken
 
   let res: chromeRequest.Response<string>
-  if (substore) {
-    const urlObj = new URL(`http://127.0.0.1:${subStorePort}${url}`)
-    urlObj.searchParams.set('target', 'ClashMeta')
-    urlObj.searchParams.set('noCache', 'true')
-    if (useProxy) {
-      urlObj.searchParams.set('proxy', `http://127.0.0.1:${mixedPort}`)
-    }
-    res = await chromeRequest.get(urlObj.toString(), { headers, responseType: 'text', timeout })
+  if (useProxy) {
+    res = await chromeRequest.get(url, {
+      headers,
+      responseType: 'text',
+      timeout,
+      proxy: { protocol: 'http', host: '127.0.0.1', port: mixedPort }
+    })
   } else {
     res = await chromeRequest.get(url, {
       headers,
       responseType: 'text',
       timeout,
-      proxy: useProxy ? { protocol: 'http', host: '127.0.0.1', port: mixedPort } : false
+      proxy: false
     })
   }
 
@@ -318,7 +315,6 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     name: item.name || (item.type === 'remote' ? 'Remote File' : 'Local File'),
     type: item.type || 'local',
     url: item.url,
-    substore: item.substore || false,
     interval: item.interval || 0,
     override: item.override || [],
     useProxy: item.useProxy || false,
@@ -356,15 +352,14 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
       url: profileUrl,
       mixedPort,
       userAgent: item.userAgent || userAgent || `mihomo.party/v${app.getVersion()} (clash.meta)`,
-      authToken: item.authToken,
-      substore: newItem.substore || false
+      authToken: item.authToken
     }
 
     const fetchSub = (useProxy: boolean, timeout: number): Promise<FetchResult> =>
       fetchAndValidateSubscription({ ...baseOptions, useProxy, timeout })
 
     let result: FetchResult
-    if (newItem.useProxy || newItem.substore) {
+    if (newItem.useProxy) {
       result = await fetchSub(Boolean(newItem.useProxy), userItemTimeoutMs)
     } else {
       try {

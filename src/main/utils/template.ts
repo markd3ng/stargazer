@@ -20,7 +20,7 @@ export const defaultConfig: IAppConfig = {
   proxyCols: 'auto',
   connectionDirection: 'asc',
   connectionOrderBy: 'time',
-  useSubStore: true,
+
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,
@@ -47,7 +47,6 @@ export const defaultConfig: IAppConfig = {
     'dns',
     'sniff',
     'log',
-    'substore',
     'network'
   ],
   siderWidth: 250,

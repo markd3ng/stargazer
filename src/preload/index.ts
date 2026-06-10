@@ -107,16 +107,6 @@ const validInvokeChannels = [
   'reinitWebdavBackupScheduler',
   'exportLocalBackup',
   'importLocalBackup',
-  // SubStore
-  'startSubStoreFrontendServer',
-  'stopSubStoreFrontendServer',
-  'startSubStoreBackendServer',
-  'stopSubStoreBackendServer',
-  'downloadSubStore',
-  'subStorePort',
-  'subStoreFrontendPort',
-  'subStoreSubs',
-  'subStoreCollections',
   // Theme
   'resolveThemes',
   'fetchThemes',
