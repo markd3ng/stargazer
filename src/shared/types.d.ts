@@ -286,22 +286,13 @@ interface IAppConfig {
   resourceCardStatus?: CardStatus
   ruleCardStatus?: CardStatus
   sniffCardStatus?: CardStatus
-  substoreCardStatus?: CardStatus
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
   usageCardStatus?: CardStatus
   githubToken?: string
-  useSubStore: boolean
-  subStoreHost?: string
-  subStoreBackendSyncCron?: string
-  subStoreBackendDownloadCron?: string
-  subStoreBackendUploadCron?: string
   autoQuitWithoutCore?: boolean
   autoQuitWithoutCoreDelay?: number
-  useCustomSubStore?: boolean
-  useProxyInSubStore?: boolean
   mihomoCpuPriority?: Priority
-  customSubStoreUrl?: string
   diffWorkDir?: boolean
   autoSetDNS?: boolean
   originDNS?: string
@@ -535,17 +526,8 @@ interface IProfileItem {
   override?: string[]
   useProxy?: boolean
   extra?: ISubscriptionUserInfo
-  substore?: boolean
   allowFixedInterval?: boolean
   autoUpdate?: boolean
   authToken?: string
   userAgent?: string
-  updateTimeout?: number
-}
-
-interface ISubStoreSub {
-  name: string
-  displayName?: string
-  icon?: string
-  tag?: string[]
 }

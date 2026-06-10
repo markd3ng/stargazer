@@ -120,16 +120,6 @@ interface IpcApi {
   reinitWebdavBackupScheduler: () => Promise<void>
   exportLocalBackup: () => Promise<boolean>
   importLocalBackup: () => Promise<boolean>
-  // SubStore
-  startSubStoreFrontendServer: () => Promise<void>
-  stopSubStoreFrontendServer: () => Promise<void>
-  startSubStoreBackendServer: () => Promise<void>
-  stopSubStoreBackendServer: () => Promise<void>
-  downloadSubStore: () => Promise<void>
-  subStorePort: () => Promise<number>
-  subStoreFrontendPort: () => Promise<number>
-  subStoreSubs: () => Promise<ISubStoreSub[]>
-  subStoreCollections: () => Promise<ISubStoreSub[]>
   // Theme
   resolveThemes: () => Promise<{ key: string; label: string; content: string }[]>
   fetchThemes: () => Promise<void>
@@ -275,16 +265,6 @@ export const {
   reinitWebdavBackupScheduler,
   exportLocalBackup,
   importLocalBackup,
-  // SubStore
-  startSubStoreFrontendServer,
-  stopSubStoreFrontendServer,
-  startSubStoreBackendServer,
-  stopSubStoreBackendServer,
-  downloadSubStore,
-  subStorePort,
-  subStoreFrontendPort,
-  subStoreSubs,
-  subStoreCollections,
   // Theme
   resolveThemes,
   fetchThemes,
