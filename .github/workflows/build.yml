@@ -280,7 +280,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
-        run: pnpm checksum .pkg
+        run: pnpm checksum .dmg
       - name: Copy Legacy Artifacts
         run: pnpm copy-legacy
       - name: Upload Artifacts
@@ -290,7 +290,7 @@ jobs:
           name: MacOS ${{ matrix.arch }}
           path: |
             dist/*.sha256
-            dist/*.pkg
+            dist/*.dmg
           if-no-files-found: error
       - name: Publish Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -298,7 +298,7 @@ jobs:
         with:
           files: |
             dist/*.sha256
-            dist/*.pkg
+            dist/*.dmg
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Dev Release
         if: github.event_name == 'workflow_dispatch'
@@ -307,7 +307,7 @@ jobs:
           tag_name: dev
           files: |
             dist/*.sha256
-            dist/*.pkg
+            dist/*.dmg
           prerelease: true
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
