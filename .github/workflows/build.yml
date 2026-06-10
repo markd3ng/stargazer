@@ -333,19 +333,6 @@ jobs:
         env:
           GITHUB_EVENT_NAME: workflow_dispatch
         run: node scripts/update-version.mjs
-      - name: Telegram Notification
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          RELEASE_TYPE: release
-        run: pnpm telegram
-      - name: Telegram Dev Notification
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          GITHUB_SHA: ${{ github.sha }}
-          RELEASE_TYPE: dev
-        run: pnpm telegram:dev
       - name: Generate latest.yml
         run: pnpm updater
       - name: Publish Release
