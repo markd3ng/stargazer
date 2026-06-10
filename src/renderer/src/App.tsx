@@ -31,7 +31,6 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { applyTheme, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
-import SubStoreCard from '@renderer/components/sider/substore-card'
 import NetworkCard from '@renderer/components/sider/network-card'
 import UsageCard from '@renderer/components/sider/usage-card'
 import { useTrafficLogger } from '@renderer/hooks/use-traffic-logger'
@@ -57,7 +56,6 @@ const ALL_SIDER_KEYS = [
   'dns',
   'sniff',
   'log',
-  'substore',
   'network',
   'usage'
 ]
@@ -90,7 +88,6 @@ const App: React.FC = () => {
       'dns',
       'sniff',
       'log',
-      'substore',
       'network',
       'usage'
     ]
@@ -195,7 +192,6 @@ const App: React.FC = () => {
     rule: 'rules',
     resource: 'resources',
     override: 'override',
-    substore: 'substore',
     network: 'network',
     usage: 'traffic'
   }
@@ -213,7 +209,6 @@ const App: React.FC = () => {
     rule: RuleCard,
     resource: ResourceCard,
     override: OverrideCard,
-    substore: SubStoreCard,
     network: NetworkCard,
     usage: UsageCard
   }
