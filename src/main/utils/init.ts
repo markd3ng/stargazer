@@ -354,7 +354,6 @@ async function migrateMihomoConfig(): Promise<void> {
 
 async function migration(): Promise<void> {
   await Promise.all([
-    migrateSiderOrder(),
     migrateAppTheme(),
     migrateEnvType(),
     migrateTraySettings(),
