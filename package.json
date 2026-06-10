@@ -1,10 +1,10 @@
 {
-  "name": "mihomo-party",
+  "name": "stargazer",
   "version": "1.9.6",
-  "description": "Clash Party",
+  "description": "Star Gazer",
   "type": "module",
   "main": "./out/main/index.js",
-  "author": "mihomo-party-org",
+  "author": "markd3ng",
   "homepage": "https://clashparty.org",
   "scripts": {
     "format": "prettier --write .",

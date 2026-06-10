@@ -1,5 +1,5 @@
-appId: party.mihomo.app
-productName: Clash Party
+appId: party.stargazer.app
+productName: Star Gazer
 directories:
   buildResources: build
 files:
@@ -19,7 +19,7 @@ extraResources:
   - from: './extra/'
     to: ''
 protocols:
-  name: 'Clash Party URI Scheme'
+  name: 'Star Gazer URI Scheme'
   schemes:
     - 'clash'
     - 'mihomo'
@@ -27,9 +27,9 @@ win:
   target:
     - nsis
     - 7z
-  artifactName: clash-party-windows-${version}-${arch}-portable.${ext}
+  artifactName: stargazer-windows-${version}-${arch}-portable.${ext}
 nsis:
-  artifactName: clash-party-windows-${version}-${arch}-setup.${ext}
+  artifactName: stargazer-windows-${version}-${arch}-setup.${ext}
   uninstallDisplayName: ${productName}
   allowToChangeInstallationDirectory: true
   oneClick: false
@@ -37,42 +37,26 @@ nsis:
   createDesktopShortcut: always
 mac:
   target:
-    - pkg
-  entitlementsInherit: build/entitlements.mac.plist
-  hardenedRuntime: true
-  gatekeeperAssess: false
-  extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
-  artifactName: clash-party-macos-${version}-${arch}.${ext}
-pkg:
-  allowAnywhere: false
-  allowCurrentUserHome: false
-  isRelocatable: false
-  background:
-    alignment: bottomleft
-    file: build/background.png
+    - dmg
+  artifactName: stargazer-macos-${version}-${arch}.${ext}
 linux:
-  executableName: mihomo-party
+  executableName: stargazer
   icon: build/icon.png
   desktop:
     entry:
-      Name: Clash Party
+      Name: Star Gazer
       GenericName: Proxy Client
       Comment: A GUI client based on Mihomo
       MimeType: 'x-scheme-handler/clash;x-scheme-handler/mihomo'
       Keywords: proxy;clash;mihomo;vpn;
-      StartupWMClass: mihomo-party
-      Icon: mihomo-party
+      StartupWMClass: stargazer
+      Icon: stargazer
   target:
     - deb
     - rpm
-  maintainer: mihomo-party-org
+  maintainer: markd3ng
   category: Utility
-  artifactName: clash-party-linux-${version}-${arch}.${ext}
+  artifactName: stargazer-linux-${version}-${arch}.${ext}
 deb:
   afterInstall: 'build/linux/postinst'
   afterRemove: 'build/linux/postuninst'
