@@ -117,6 +117,16 @@ const EditInfoModal: React.FC<Props> = (props) => {
                   placeholder={t('profiles.editInfo.userAgentPlaceholder')}
                 />
               </SettingItem>
+              <SettingItem title={t('profiles.editInfo.fingerprint')}>
+                <Input
+                  size="sm"
+                  className={cn(inputWidth)}
+                  value={values.fingerprint || ''}
+                  onValueChange={(v) => {
+                    setValues({ ...values, fingerprint: v.trim() || undefined })
+                  }}
+                />
+              </SettingItem>
               <SettingItem title={t('profiles.editInfo.useProxy')}>
                 <Switch
                   size="sm"

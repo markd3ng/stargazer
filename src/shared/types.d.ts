@@ -402,6 +402,7 @@ interface IMihomoDNSConfig {
   'prefer-h3'?: boolean
   'enhanced-mode'?: DnsMode
   'fake-ip-range'?: string
+  'fake-ip-range6'?: string
   'fake-ip-filter'?: string[]
   'fake-ip-filter-mode'?: FilterMode
   'use-hosts'?: boolean
@@ -530,4 +531,5 @@ interface IProfileItem {
   autoUpdate?: boolean
   authToken?: string
   userAgent?: string
+  fingerprint?: string
 }

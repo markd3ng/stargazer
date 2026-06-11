@@ -20,6 +20,7 @@ const DNS: React.FC = () => {
     enable = true,
     ipv6 = false,
     'fake-ip-range': fakeIPRange = '198.18.0.1/16',
+    'fake-ip-range6': fakeIPRange6 = '',
     'fake-ip-filter': fakeIPFilter = [
       '*',
       '+.lan',
@@ -185,6 +186,7 @@ const DNS: React.FC = () => {
                 enable: values.enable,
                 ipv6: values.ipv6,
                 'fake-ip-range': values.fakeIPRange,
+                'fake-ip-range6': values.fakeIPRange6,
                 'fake-ip-filter': values.fakeIPFilter,
                 'fake-ip-filter-mode': values.fakeIPFilterMode,
                 'enhanced-mode': values.enhancedMode,
@@ -255,6 +257,17 @@ const DNS: React.FC = () => {
                 placeholder={t('dns.fakeIp.rangePlaceholder')}
                 onValueChange={(v) => {
                   setValues({ ...values, fakeIPRange: v })
+                }}
+              />
+            </SettingItem>
+            <SettingItem title={t('dns.fakeIp.range6')} divider>
+              <Input
+                size="sm"
+                className="w-[50%]"
+                value={values.fakeIPRange6}
+                placeholder={t('dns.fakeIp.range6Placeholder')}
+                onValueChange={(v) => {
+                  setValues({ ...values, fakeIPRange6: v })
                 }}
               />
             </SettingItem>
