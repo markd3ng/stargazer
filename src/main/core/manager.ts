@@ -5,7 +5,7 @@ import path from 'path'
 import os from 'os'
 import { existsSync } from 'fs'
 import chokidar, { FSWatcher } from 'chokidar'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, Notification } from 'electron'
 import { mainWindow } from '../window'
 import {
   getAppConfig,
@@ -135,6 +135,79 @@ export const getMihomoIpcPath = (): string => {
   const uid = process.getuid?.() || 'unknown'
   const processId = process.pid
   return `/tmp/stargazer-${uid}-${processId}.sock`
+}
+
+// Tailscale 认证日志解析与通知
+const TAILSCALE_AUTH_PREFIX = 'tailscale-auth:'
+const notifiedTailscaleKeys = new Set<string>()
+const tailscaleNotificationsByName = new Map<string, Set<string>>()
+
+function parseTailscaleAuthLog(line: string): { name: string; url: string } | undefined {
+  const prefix = '[Tailscale]('
+  const marker = ') To start this tsnet server, restart with TS_AUTHKEY set, or go to: '
+  const prefixIndex = line.indexOf(prefix)
+  if (prefixIndex < 0) return undefined
+
+  const rest = line.slice(prefixIndex + prefix.length)
+  const markerIndex = rest.indexOf(marker)
+  if (markerIndex <= 0) return undefined
+
+  const name = rest.slice(0, markerIndex)
+  let url = rest.slice(markerIndex + marker.length).trim()
+
+  const urlEnd = findTailscaleAuthUrlEnd(url)
+  if (urlEnd >= 0) url = url.slice(0, urlEnd)
+
+  if (!name || (!url.startsWith('http://') && !url.startsWith('https://'))) return undefined
+  return { name, url }
+}
+
+function parseTailscaleAuthDoneLog(line: string): string | undefined {
+  const prefix = '[Tailscale]('
+  const marker = ') AuthLoop: state is Starting; done'
+  const prefixIndex = line.indexOf(prefix)
+  if (prefixIndex < 0) return undefined
+  const rest = line.slice(prefixIndex + prefix.length)
+  const markerIndex = rest.indexOf(marker)
+  return markerIndex > 0 ? rest.slice(0, markerIndex) || undefined : undefined
+}
+
+function findTailscaleAuthUrlEnd(url: string): number {
+  for (let i = 0; i < url.length; i++) {
+    const c = url.charCodeAt(i)
+    if (c <= 32 || url[i] === '"' || url[i] === "'" || url[i] === '<' || url[i] === '>') return i
+  }
+  return -1
+}
+
+function handleTailscaleAuthLog(str: string): void {
+  const doneName = parseTailscaleAuthDoneLog(str)
+  if (doneName) {
+    const keys = tailscaleNotificationsByName.get(doneName)
+    if (keys) for (const k of keys) notifiedTailscaleKeys.delete(k)
+    tailscaleNotificationsByName.delete(doneName)
+    return
+  }
+
+  const auth = parseTailscaleAuthLog(str)
+  if (!auth) return
+
+  const key = `${TAILSCALE_AUTH_PREFIX}${auth.url}`
+  if (notifiedTailscaleKeys.has(key)) return
+
+  notifiedTailscaleKeys.add(key)
+  const keys = tailscaleNotificationsByName.get(auth.name) ?? new Set<string>()
+  keys.add(key)
+  tailscaleNotificationsByName.set(auth.name, keys)
+
+  const n = new Notification({ title: `${auth.name} needs Tailscale auth`, body: auth.url })
+  n.on('click', () => { require('electron').shell.openExternal(auth.url) })
+  n.show()
+}
+
+function clearTailscaleAuthNotifications(): void {
+  notifiedTailscaleKeys.clear()
+  tailscaleNotificationsByName.clear()
 }
 
 // 核心配置接口
@@ -287,6 +360,7 @@ function setupCoreListeners(
 
   proc.stdout?.on('data', async (data) => {
     const str = data.toString()
+    handleTailscaleAuthLog(str)
 
     // TUN 权限错误
     if (str.includes('configure tun interface: operation not permitted')) {
@@ -414,6 +488,7 @@ setStopCoreBeforeAdminRestart(stopCore)
 
 // 重启核心
 export async function restartCore(): Promise<void> {
+  clearTailscaleAuthNotifications()
   if (isRestarting) {
     managerLogger.info('Core restart already in progress, skipping duplicate request')
     return
