@@ -373,6 +373,7 @@ interface IMihomoTunConfig {
   'dns-hijack'?: string[]
   device?: string
   mtu?: number
+  'disable-icmp-forwarding'?: boolean
   'strict-route'?: boolean
   gso?: boolean
   'gso-max-size'?: number

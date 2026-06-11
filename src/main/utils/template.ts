@@ -95,7 +95,8 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'auto-detect-interface': true,
     'dns-hijack': ['any:53'],
     'route-exclude-address': [],
-    mtu: 1500
+    mtu: 1500,
+    'disable-icmp-forwarding': false
   },
   dns: {
     enable: true,

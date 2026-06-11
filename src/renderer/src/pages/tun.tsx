@@ -32,6 +32,7 @@ const Tun: React.FC = () => {
     'dns-hijack': dnsHijack = ['any:53'],
     'route-exclude-address': routeExcludeAddress = [],
     'strict-route': strictRoute = false,
+    'disable-icmp-forwarding': disableIcmpForwarding = false,
     mtu = 1500
   } = tun || {}
   const [changed, setChanged] = useState(false)
@@ -235,6 +236,15 @@ const Tun: React.FC = () => {
               onValueChange={(v) => {
                 const num = parseInt(v)
                 setValues({ ...values, mtu: isNaN(num) ? 1500 : num })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title={t('tun.icmpForwarding')} divider>
+            <Switch
+              size="sm"
+              isSelected={!disableIcmpForwarding}
+              onValueChange={(v) => {
+                setValues({ ...values, disableIcmpForwarding: !v })
               }}
             />
           </SettingItem>
