@@ -72,7 +72,7 @@ const GeneralConfig: React.FC = () => {
     customTheme = 'default.css',
     envType = [platform === 'win32' ? 'powershell' : 'bash'],
     autoCheckUpdate,
-    githubProxy = 'auto',
+    githubProxy = 'direct',
     appTheme = 'system',
     language = 'zh-CN',
     triggerMainWindowBehavior = 'show',
@@ -195,18 +195,27 @@ const GeneralConfig: React.FC = () => {
             classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             className="w-50"
             size="sm"
-            selectedKeys={[githubProxy]}
+            selectedKeys={[githubProxy === 'direct' || githubProxy === 'auto' ? githubProxy : 'custom']}
             aria-label={t('settings.githubProxy')}
             onSelectionChange={(v) => {
-              patchAppConfig({ githubProxy: Array.from(v)[0] as string })
+              const val = Array.from(v)[0] as string
+              if (val === 'custom') return
+              patchAppConfig({ githubProxy: val })
             }}
           >
-            <SelectItem key="auto">{t('settings.githubProxy.auto')}</SelectItem>
             <SelectItem key="direct">{t('settings.githubProxy.direct')}</SelectItem>
-            <SelectItem key="https://gh-proxy.org">gh-proxy.org</SelectItem>
-            <SelectItem key="https://ghfast.top">ghfast.top</SelectItem>
-            <SelectItem key="https://gh-proxy.org">gh-proxy.org</SelectItem>
+            <SelectItem key="auto">{t('settings.githubProxy.auto')}</SelectItem>
+            <SelectItem key="custom">{t('settings.githubProxy.custom')}</SelectItem>
           </Select>
+          {githubProxy !== 'direct' && githubProxy !== 'auto' && (
+            <Input
+              size="sm"
+              className="w-50 mt-2"
+              value={githubProxy}
+              placeholder="https://your-proxy.example.com"
+              onValueChange={(v) => patchAppConfig({ githubProxy: v })}
+            />
+          )}
         </SettingItem>
         <SettingItem title={t('settings.silentStart')} divider>
           <Switch
