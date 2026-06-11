@@ -15,7 +15,7 @@ import { checkAdminPrivileges } from '../core/manager'
 import { parse } from '../utils/yaml'
 import * as chromeRequest from '../utils/chromeRequest'
 
-const GITHUB_PROXIES = ['https://gh-proxy.org', 'https://ghfast.top', 'https://down.clashparty.org']
+const GITHUB_PROXIES = ['https://gh-proxy.org', 'https://ghfast.top']
 
 function buildDownloadUrls(githubUrl: string, proxyPref = ''): string[] {
   if (proxyPref === 'direct') return [githubUrl]

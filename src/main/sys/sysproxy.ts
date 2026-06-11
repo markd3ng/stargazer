@@ -148,7 +148,7 @@ function isSocketFileExists(): boolean {
 async function isHelperRunning(): Promise<boolean> {
   try {
     const execPromise = promisify(exec)
-    const { stdout } = await execPromise('pgrep -f party.mihomo.helper')
+    const { stdout } = await execPromise('pgrep -f party.stargazer.helper')
     return stdout.trim().length > 0
   } catch {
     return false
@@ -157,7 +157,7 @@ async function isHelperRunning(): Promise<boolean> {
 
 async function startHelperService(): Promise<void> {
   const execPromise = promisify(exec)
-  const shell = `launchctl kickstart -k system/party.mihomo.helper`
+  const shell = `launchctl kickstart -k system/party.stargazer.helper`
   const command = `do shell script "${shell}" with administrator privileges`
   await execPromise(`osascript -e '${command}'`)
   await new Promise((resolve) => setTimeout(resolve, 1500))
@@ -166,7 +166,7 @@ async function startHelperService(): Promise<void> {
 async function requestSocketRecreation(): Promise<void> {
   try {
     const execPromise = promisify(exec)
-    const shell = `pkill -USR1 -f party.mihomo.helper`
+    const shell = `pkill -USR1 -f party.stargazer.helper`
     const command = `do shell script "${shell}" with administrator privileges`
     await execPromise(`osascript -e '${command}'`)
     await new Promise((resolve) => setTimeout(resolve, 1000))

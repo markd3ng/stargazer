@@ -128,8 +128,8 @@ export const getMihomoIpcPath = (): string => {
     const processId = process.pid
 
     return isAdmin
-      ? `\\\\.\\pipe\\MihomoParty\\mihomo-admin-${sessionId}-${processId}`
-      : `\\\\.\\pipe\\MihomoParty\\mihomo-user-${sessionId}-${processId}`
+      ? `\\\\.\\pipe\\Stargazer\\mihomo-admin-${sessionId}-${processId}`
+      : `\\\\.\\pipe\\Stargazer\\mihomo-user-${sessionId}-${processId}`
   }
 
   const uid = process.getuid?.() || 'unknown'

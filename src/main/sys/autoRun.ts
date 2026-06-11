@@ -156,7 +156,7 @@ Terminal=false
 Type=Application
 Icon=mihomo-party
 StartupWMClass=mihomo-party
-Comment=Clash Party
+Comment=Star Gazer
 Categories=Utility;
 `
 

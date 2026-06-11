@@ -17,7 +17,7 @@ import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { getFilePath, readTextFile } from '@renderer/utils/ipc'
 import type { KeyboardEvent } from 'react'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MdContentPaste, MdUnfoldMore, MdUnfoldLess } from 'react-icons/md'
 import {
   DndContext,

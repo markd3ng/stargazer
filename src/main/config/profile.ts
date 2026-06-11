@@ -351,7 +351,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     const baseOptions: Omit<FetchOptions, 'useProxy' | 'timeout'> = {
       url: profileUrl,
       mixedPort,
-      userAgent: item.userAgent || userAgent || `mihomo.party/v${app.getVersion()} (clash.meta)`,
+      userAgent: item.userAgent || userAgent || `stargazer/v${app.getVersion()} (clash.meta)`,
       authToken: item.authToken
     }
 

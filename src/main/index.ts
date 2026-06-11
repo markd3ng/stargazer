@@ -200,7 +200,7 @@ const initPromise = (async () => {
 })()
 
 app.whenReady().then(async () => {
-  electronApp.setAppUserModelId('party.mihomo.app')
+  electronApp.setAppUserModelId('party.stargazer.app')
 
   const appConfig = await initPromise
 

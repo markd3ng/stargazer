@@ -27,7 +27,7 @@ const Settings: React.FC = () => {
             title={t('settings.links.docs')}
             className="app-nodrag"
             onPress={() => {
-              window.open('https://mihomo.party')
+              window.open('https://example.site')
             }}
           >
             <CgWebsite className="text-lg" />
