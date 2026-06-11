@@ -500,34 +500,32 @@ export async function copyEnv(
   const { host } = sysProxy
   const proxyUrl = `http://${host || '127.0.0.1'}:${mixedPort}`
 
+  let text: string
   switch (type) {
     case 'bash': {
-      clipboard.writeText(
-        `export https_proxy=${proxyUrl} http_proxy=${proxyUrl} all_proxy=${proxyUrl}`
-      )
+      text = `export https_proxy=${proxyUrl} http_proxy=${proxyUrl} all_proxy=${proxyUrl}`
       break
     }
     case 'cmd': {
-      clipboard.writeText(`set http_proxy=${proxyUrl}\r\nset https_proxy=${proxyUrl}`)
+      text = `set http_proxy=${proxyUrl}\r\nset https_proxy=${proxyUrl}`
       break
     }
     case 'powershell': {
-      clipboard.writeText(`$env:HTTP_PROXY="${proxyUrl}"; $env:HTTPS_PROXY="${proxyUrl}"`)
+      text = `$env:HTTP_PROXY="${proxyUrl}"; $env:HTTPS_PROXY="${proxyUrl}"`
       break
     }
     case 'fish': {
-      clipboard.writeText(
-        `set -x http_proxy ${proxyUrl}; set -x https_proxy ${proxyUrl}; set -x all_proxy ${proxyUrl}`
-      )
+      text = `set -x http_proxy ${proxyUrl}; set -x https_proxy ${proxyUrl}; set -x all_proxy ${proxyUrl}`
       break
     }
     case 'nushell': {
-      clipboard.writeText(
-        `$env.HTTP_PROXY = "${proxyUrl}"; $env.HTTPS_PROXY = "${proxyUrl}"; $env.ALL_PROXY = "${proxyUrl}"`
-      )
+      text = `$env.HTTP_PROXY = "${proxyUrl}"; $env.HTTPS_PROXY = "${proxyUrl}"; $env.ALL_PROXY = "${proxyUrl}"`
       break
     }
   }
+
+  // Use write({text}) instead of writeText() for macOS compatibility
+  clipboard.write({ text })
 }
 
 export async function showTrayIcon(): Promise<void> {
