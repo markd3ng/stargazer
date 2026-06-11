@@ -1,4 +1,4 @@
-import { Button, Card, CardBody } from '@heroui/react'
+import { Button, Card, CardBody, Tooltip } from '@heroui/react'
 import { mihomoUnfixedProxy } from '@renderer/utils/ipc'
 import React, { useMemo, useState, useCallback } from 'react'
 import { FaMapPin } from 'react-icons/fa6'
@@ -84,9 +84,11 @@ const ProxyItemBase: React.FC<Props> = (props) => {
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center pl-1">
               <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                <div className="flag-emoji inline" title={proxy.name}>
-                  {proxy.name}
-                </div>
+                <Tooltip content={`${proxy.type} | ${delay}ms`}>
+                  <div className="flag-emoji inline" title={proxy.name}>
+                    {proxy.name}
+                  </div>
+                </Tooltip>
               </div>
               {fixed && (
                 <Button
