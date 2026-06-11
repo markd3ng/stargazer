@@ -47,7 +47,8 @@ async function setDNS(dns: string): Promise<void> {
     await axios.post('http://localhost/dns', { service, dns }, { socketPath: helperSocketPath })
   } catch {
     // fallback to osascript if helper not available
-    const shell = `networksetup -setdnsservers "${service}" ${dns}`
+    const sanitizedDns = dns.replace(/[^0-9a-fA-F.:\s]/g, '')
+    const shell = `networksetup -setdnsservers "${service}" ${sanitizedDns}`
     const command = `do shell script "${shell}" with administrator privileges`
     await execPromise(`osascript -e '${command}'`)
   }

@@ -1,11 +1,6 @@
-import { existsSync, mkdirSync } from 'fs'
-import { writeFile, rm, cp } from 'fs/promises'
 import http from 'http'
 import net from 'net'
-import path from 'path'
-import { dataDir, mihomoWorkDir } from '../utils/dirs'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import { systemLogger } from '../utils/logger'
 
 export let pacPort: number
 
