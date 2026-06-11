@@ -34,14 +34,10 @@ import { TitleBarOverlayOptions } from 'electron'
 import NetworkCard from '@renderer/components/sider/network-card'
 import UsageCard from '@renderer/components/sider/usage-card'
 import { useTrafficLogger } from '@renderer/hooks/use-traffic-logger'
-import { createTourDriver, getDriver, startTourIfNeeded } from '@renderer/utils/tour'
-import 'driver.js/dist/driver.css'
 import { useTranslation } from 'react-i18next'
 import MihomoIcon from './components/base/mihomo-icon'
 
 let navigate: NavigateFunction
-
-export { getDriver }
 
 const ALL_SIDER_KEYS = [
   'sysproxy',
@@ -99,7 +95,6 @@ const App: React.FC = () => {
   const siderWidthValueRef = useRef(siderWidthValue)
   const [resizing, setResizing] = useState(false)
   const resizingRef = useRef(resizing)
-  const tourInitialized = useRef(false)
   const sensors = useSensors(useSensor(PointerSensor))
   const { setTheme, systemTheme } = useTheme()
   navigate = useNavigate()
@@ -135,14 +130,6 @@ const App: React.FC = () => {
       patchAppConfig({ siderWidth: siderWidthValueRef.current })
     }
   }, [patchAppConfig])
-
-  useEffect(() => {
-    if (!tourInitialized.current) {
-      tourInitialized.current = true
-      createTourDriver(t, navigate)
-      startTourIfNeeded()
-    }
-  }, [t])
 
   useEffect(() => {
     setNativeTheme(appTheme)

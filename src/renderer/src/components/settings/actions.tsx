@@ -10,7 +10,6 @@ import {
 import { useState } from 'react'
 import { version } from '@renderer/utils/init'
 import { IoIosHelpCircle } from 'react-icons/io'
-import { getDriver } from '@renderer/App'
 import { useTranslation } from 'react-i18next'
 import UpdaterModal from '../updater/updater-modal'
 import SettingItem from '../base/base-setting-item'
@@ -47,11 +46,6 @@ const Actions: React.FC = () => {
         />
       )}
       <SettingCard>
-        <SettingItem title={t('actions.guide.title')} divider>
-          <Button size="sm" onPress={() => getDriver()?.drive()}>
-            {t('actions.guide.button')}
-          </Button>
-        </SettingItem>
         <SettingItem title={t('actions.update.title')} divider>
           <Button
             size="sm"

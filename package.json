@@ -83,7 +83,6 @@
     "chart.js": "^4.5.1",
     "cron-validator": "^1.4.0",
     "dayjs": "^1.11.20",
-    "driver.js": "^1.4.0",
     "electron": "^41.5.1",
     "electron-builder": "26.0.12",
     "electron-vite": "4.0.1",
