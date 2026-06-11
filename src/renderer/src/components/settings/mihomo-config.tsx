@@ -124,7 +124,7 @@ const MihomoConfig: React.FC = () => {
               try {
                 const url = await getGistUrl()
                 if (url !== '') {
-                  await navigator.clipboard.writeText(`${url}/raw/clash-party.yaml`)
+                  await navigator.clipboard.writeText(`${url}/raw/stargazer.yaml`)
                 }
               } catch (e) {
                 toast.error(String(e))

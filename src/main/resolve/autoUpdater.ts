@@ -45,7 +45,7 @@ export async function checkUpdate(): Promise<IAppVersion | undefined> {
     getAppConfig()
   ])
   const githubUrl =
-    'https://github.com/mihomo-party-org/mihomo-party/releases/latest/download/latest.yml'
+    'https://github.com/markd3ng/stargazer/releases/latest/download/latest.yml'
   const res = await tryDownload(buildDownloadUrls(githubUrl, githubProxy), {
     headers: { 'Content-Type': 'application/octet-stream' },
     proxy: { protocol: 'http', host: '127.0.0.1', port: mixedPort },
@@ -83,13 +83,11 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     getControledMihomoConfig(),
     getAppConfig()
   ])
-  const githubBase = `https://github.com/mihomo-party-org/mihomo-party/releases/download/v${version}/`
+  const githubBase = `https://github.com/markd3ng/stargazer/releases/download/v${version}/`
   const fileMap = {
-    'win32-x64': `clash-party-windows-${version}-x64-setup.exe`,
-    'win32-ia32': `clash-party-windows-${version}-ia32-setup.exe`,
-    'win32-arm64': `clash-party-windows-${version}-arm64-setup.exe`,
-    'darwin-x64': `clash-party-macos-${version}-x64.pkg`,
-    'darwin-arm64': `clash-party-macos-${version}-arm64.pkg`
+    'win32-x64': `stargazer-windows-${version}-x64-setup.exe`,
+    'win32-arm64': `stargazer-windows-${version}-arm64-setup.exe`,
+    'darwin-arm64': `stargazer-macos-${version}-arm64.dmg`
   }
   let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {

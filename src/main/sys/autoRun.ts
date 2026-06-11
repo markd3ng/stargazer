@@ -8,7 +8,7 @@ import { exePath, homeDir } from '../utils/dirs'
 import { managerLogger } from '../utils/logger'
 import { checkAdminPrivileges } from '../core/admin'
 
-const appName = 'mihomo-party'
+const appName = 'stargazer'
 
 function getTaskXml(asAdmin: boolean): string {
   const runLevel = asAdmin ? 'HighestAvailable' : 'LeastPrivilege'
@@ -150,12 +150,12 @@ export async function enableAutoRun(): Promise<void> {
   if (process.platform === 'linux') {
     let desktop = `
 [Desktop Entry]
-Name=mihomo-party
+Name=stargazer
 Exec=${exePath()} %U
 Terminal=false
 Type=Application
-Icon=mihomo-party
-StartupWMClass=mihomo-party
+Icon=stargazer
+StartupWMClass=stargazer
 Comment=Star Gazer
 Categories=Utility;
 `

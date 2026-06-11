@@ -134,7 +134,7 @@ export const getMihomoIpcPath = (): string => {
 
   const uid = process.getuid?.() || 'unknown'
   const processId = process.pid
-  return `/tmp/mihomo-party-${uid}-${processId}.sock`
+  return `/tmp/stargazer-${uid}-${processId}.sock`
 }
 
 // 核心配置接口

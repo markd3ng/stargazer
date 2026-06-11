@@ -33,7 +33,7 @@ async function createGist(token: string, content: string): Promise<void> {
     {
       description: 'Auto Synced Star Gazer Runtime Config',
       public: false,
-      files: { 'clash-party.yaml': { content } }
+      files: { 'stargazer.yaml': { content } }
     },
     {
       headers: {
@@ -56,7 +56,7 @@ async function updateGist(token: string, id: string, content: string): Promise<v
     `https://api.github.com/gists/${id}`,
     {
       description: 'Auto Synced Star Gazer Runtime Config',
-      files: { 'clash-party.yaml': { content } }
+      files: { 'stargazer.yaml': { content } }
     },
     {
       headers: {

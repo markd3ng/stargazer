@@ -3,7 +3,7 @@ import { join } from 'path'
 
 /**
  * 复制打包产物并重命名为兼容旧版本的文件名
- * 将 clash-party 重命名为 mihomo-party，用于更新检测兼容性
+ * 将 stargazer 重命名为 mihomo-party，用于更新检测兼容性
  */
 
 const distDir = 'dist'
@@ -19,8 +19,8 @@ console.log('📦 开始处理打包产物...')
 let copiedCount = 0
 
 for (const file of files) {
-  if (file.includes('clash-party') && !file.endsWith('.sha256')) {
-    const newFileName = file.replace('clash-party', 'mihomo-party')
+  if (file.includes('stargazer') && !file.endsWith('.sha256')) {
+    const newFileName = file.replace('stargazer', 'mihomo-party')
     const sourcePath = join(distDir, file)
     const targetPath = join(distDir, newFileName)
 
@@ -53,14 +53,14 @@ if (copiedCount > 0) {
 
   const finalFiles = readdirSync(distDir).sort()
   finalFiles.forEach((file) => {
-    if (file.includes('clash-party') || file.includes('mihomo-party')) {
+    if (file.includes('stargazer') || file.includes('mihomo-party')) {
       const isLegacy = file.includes('mihomo-party')
       console.log(`   ${isLegacy ? '🔄' : '📦'} ${file}`)
     }
   })
 
-  console.log('   📦 = 原始文件 (clash-party)')
+  console.log('   📦 = 原始文件 (stargazer)')
   console.log('   🔄 = 兼容文件 (mihomo-party)')
 } else {
-  console.log('ℹ️  没有找到需要复制的 clash-party 文件')
+  console.log('ℹ️  没有找到需要复制的 stargazer 文件')
 }
