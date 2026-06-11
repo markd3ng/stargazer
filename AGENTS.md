@@ -47,7 +47,20 @@ type: feat | fix | chore | refactor | perf
 - Verify immediately with automated checks
 - Only commit after all criteria pass
 
-### Rule 5: No Dead Code
+### Rule 6: Changelog Retention
+
+**After a new version is released, remove old changelog entries.** Keep only the current version and the immediately previous version.
+
+```
+Before release v1.10.0:
+  changelog.md contains: 1.10.0, 1.9.6, 1.9.5, 1.9.4, ...
+
+After release v1.10.0:
+  changelog.md contains: 1.10.0, 1.9.6   ← older entries removed
+
+After release v1.11.0:
+  changelog.md contains: 1.11.0, 1.10.0  ← only 2 most recent
+```
 
 - When removing a feature (e.g., sub-store, tutorial), remove ALL references
 - Verify with `grep -rn "featureName" src/` before commit
