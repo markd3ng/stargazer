@@ -9,7 +9,7 @@ import { pacPort, startPacServer, stopPacServer } from '../resolve/server'
 import { proxyLogger } from '../utils/logger'
 
 let triggerSysProxyTimer: NodeJS.Timeout | null = null
-const helperSocketPath = '/tmp/mihomo-party-helper.sock'
+const helperSocketPath = '/tmp/stargazer-helper.sock'
 
 const defaultBypass: string[] = (() => {
   switch (process.platform) {

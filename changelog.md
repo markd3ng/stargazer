@@ -1,3 +1,9 @@
+# 1.10.1
+## 修复
+- 修复 Clash Party → Star Gazer 改名的残留项（IndexedDB 迁移、socket 路径、pkg 安装脚本、仓库 URL、Telegram 通知、README）
+- 修复 macOS helper 的 bundle ID 不匹配问题（party.mihomo.helper → party.stargazer.helper）
+- 新增 IndexedDB 自动迁移：clashparty_db → stargazer_db，老用户数据无感迁移
+
 # 1.10.0
 
 ## 新功能 (Feat)

@@ -9,15 +9,96 @@ export interface DataUsageLog {
   download: number
 }
 
-const DB_NAME = 'clashparty_db'
+const DB_NAME = 'stargazer_db'
+const LEGACY_DB_NAME = 'clashparty_db'
 const STORE_NAME = 'data_usage_logs'
 const DB_VERSION = 1
 
 export class DataUsageDB {
   private db: IDBDatabase | null = null
 
+  static async migrateFromLegacy(): Promise<void> {
+    // Check if legacy DB exists
+    const dbs = await indexedDB.databases()
+    const legacyExists = dbs.some((db) => db.name === LEGACY_DB_NAME)
+    if (!legacyExists) return
+
+    try {
+      // Open legacy DB and read all records
+      const records: DataUsageLog[] = await new Promise((resolve, reject) => {
+        const request = indexedDB.open(LEGACY_DB_NAME, 1)
+        request.onupgradeneeded = () => {
+          // If upgrade needed, there's no data to migrate
+          resolve([])
+        }
+        request.onsuccess = () => {
+          const db = request.result
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.close()
+            resolve([])
+            return
+          }
+          const tx = db.transaction(STORE_NAME, 'readonly')
+          const store = tx.objectStore(STORE_NAME)
+          const allRequest = store.getAll()
+          allRequest.onsuccess = () => {
+            resolve(allRequest.result)
+            db.close()
+          }
+          allRequest.onerror = () => {
+            reject(allRequest.error)
+            db.close()
+          }
+        }
+        request.onerror = () => reject(request.error)
+      })
+
+      if (records.length === 0) {
+        // No data to migrate, just remove legacy DB
+        indexedDB.deleteDatabase(LEGACY_DB_NAME)
+        return
+      }
+
+      // Open new DB and write records
+      await new Promise<void>((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION)
+        request.onupgradeneeded = () => {
+          const db = request.result
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true })
+              .createIndex('timestamp', 'timestamp', { unique: false })
+          }
+        }
+        request.onsuccess = () => {
+          const db = request.result
+          const tx = db.transaction(STORE_NAME, 'readwrite')
+          const store = tx.objectStore(STORE_NAME)
+          for (const record of records) {
+            // Remove the old auto-generated id so new one is assigned
+            const { id, ...data } = record
+            store.add(data)
+          }
+          tx.oncomplete = () => {
+            db.close()
+            // Now safe to delete legacy DB
+            indexedDB.deleteDatabase(LEGACY_DB_NAME)
+            resolve()
+          }
+          tx.onerror = () => reject(tx.error)
+        }
+        request.onerror = () => reject(request.error)
+      })
+    } catch (err) {
+      console.error('Failed to migrate legacy database:', err)
+      // Non-fatal: user may lose legacy usage logs
+    }
+  }
+
   async open(): Promise<IDBDatabase> {
     if (this.db) return this.db
+
+    // Run migration before opening the new DB
+    await DataUsageDB.migrateFromLegacy()
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION)

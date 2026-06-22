@@ -1,0 +1,13 @@
+{
+  "change": "fix-rename-leftovers",
+  "phase": "design",
+  "mode": "compact",
+  "canonical_spec": "openspec",
+  "generated_by": "comet-handoff.sh",
+  "context_hash": "b1498f5204bf9b201f606c7a4175b40cda1b958c6e489fd7c802df6e9e7330f9",
+  "files": [
+    { "path": "openspec/changes/fix-rename-leftovers/proposal.md", "sha256": "738f4aef488ce9747bfbd0074edc5569cf7ca6c828434b3547bd20ee4aaae080" },
+    { "path": "openspec/changes/fix-rename-leftovers/design.md", "sha256": "3d9de702f47dd5399406e59d4e14e09ba631e0dc8b1fb624370ea153c9260d4f" },
+    { "path": "openspec/changes/fix-rename-leftovers/tasks.md", "sha256": "6def29463baf845ba8bb2827114d638cd21ae2e6ed4e30d7348b455470a28080" }
+  ]
+}
