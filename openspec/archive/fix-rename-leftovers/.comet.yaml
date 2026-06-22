@@ -17,6 +17,6 @@ verification_report: openspec/changes/fix-rename-leftovers/.comet/verification-r
 branch_status: handled
 created_at: 2026-06-22
 verified_at: 2026-06-22
-archived: false
+archived: true
 handoff_context: openspec/changes/fix-rename-leftovers/.comet/handoff/design-context.json
 handoff_hash: b1498f5204bf9b201f606c7a4175b40cda1b958c6e489fd7c802df6e9e7330f9

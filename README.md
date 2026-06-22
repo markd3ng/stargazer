@@ -9,9 +9,6 @@
   <a href="https://github.com/markd3ng/stargazer/releases">
     <img src="https://img.shields.io/github/release/markd3ng/stargazer/all.svg">
   </a>
-  <a href="https://t.me/mihomo_party_group">
-    <img src="https://img.shields.io/badge/Telegram-Group-blue?logo=telegram">
-  </a>
 </p>
 <div align='center'>
 <img width='90%' src="./images/preview.jpg">
@@ -26,5 +23,4 @@
 - [x] 内置 Smart内核 与 Mihomo(Clash Meta) 内核
 - [x] 通过 WebDAV 一键备份和恢复配置
 - [x] 强大的覆写功能，任意修订配置文件
-- [x] 深度集成 Sub-Store，轻松管理订阅
 
