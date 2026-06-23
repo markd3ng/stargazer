@@ -11,6 +11,7 @@ import { mainWindow } from '../window'
 import { appLogger } from '../utils/logger'
 import { dataDir, exeDir, exePath, isPortable, resourcesFilesDir } from '../utils/dirs'
 import { getAppConfig, getControledMihomoConfig } from '../config'
+import { DEFAULT_MIHOMO_PORTS } from '../../shared/appConfig'
 import { checkAdminPrivileges } from '../core/manager'
 import { parse } from '../utils/yaml'
 import * as chromeRequest from '../utils/chromeRequest'
@@ -40,10 +41,8 @@ async function tryDownload(
 }
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
-  const [{ 'mixed-port': mixedPort = 7890 }, { githubProxy = '' }] = await Promise.all([
-    getControledMihomoConfig(),
-    getAppConfig()
-  ])
+  const [{ 'mixed-port': mixedPort = DEFAULT_MIHOMO_PORTS.mixed }, { githubProxy = '' }] =
+    await Promise.all([getControledMihomoConfig(), getAppConfig()])
   const githubUrl =
     'https://github.com/markd3ng/stargazer/releases/latest/download/latest.yml'
   const res = await tryDownload(buildDownloadUrls(githubUrl, githubProxy), {
@@ -79,10 +78,8 @@ function compareVersions(a: string, b: string): number {
 }
 
 export async function downloadAndInstallUpdate(version: string): Promise<void> {
-  const [{ 'mixed-port': mixedPort = 7890 }, { githubProxy = '' }] = await Promise.all([
-    getControledMihomoConfig(),
-    getAppConfig()
-  ])
+  const [{ 'mixed-port': mixedPort = DEFAULT_MIHOMO_PORTS.mixed }, { githubProxy = '' }] =
+    await Promise.all([getControledMihomoConfig(), getAppConfig()])
   const githubBase = `https://github.com/markd3ng/stargazer/releases/download/v${version}/`
   const fileMap = {
     'win32-x64': `stargazer-windows-${version}-x64-setup.exe`,
@@ -115,15 +112,20 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
         { proxy, responseType: 'text' }
       )
       const expectedHash = (sha256Res.data as string).trim().split(/\s+/)[0]
+      // 进度只允许单调递增，避免多代理重试导致进度回退抽搐
+      let lastPercent = -1
       const res = await tryDownload(buildDownloadUrls(`${githubBase}${file}`, githubProxy), {
         responseType: 'arraybuffer',
         timeout: 0,
         proxy,
         headers: { 'Content-Type': 'application/octet-stream' },
         onProgress: (loaded: number, total: number) => {
+          const percent = Math.round((loaded / total) * 100)
+          if (percent <= lastPercent) return
+          lastPercent = percent
           mainWindow?.webContents.send('updateDownloadProgress', {
             status: 'downloading',
-            percent: Math.round((loaded / total) * 100)
+            percent
           })
         }
       })

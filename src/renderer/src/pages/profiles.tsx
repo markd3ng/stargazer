@@ -45,11 +45,12 @@ const Profiles: React.FC = () => {
   } = useProfileConfig()
   const { appConfig } = useAppConfig()
   const {} = appConfig || {}
-  const { current, items = [] } = profileConfig || {} 
+  const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
   const [useProxy, setUseProxy] = useState(false)
   const [authToken, setAuthToken] = useState('')
   const [userAgent, setUserAgent] = useState('')
+  const [ageSecretKey, setAgeSecretKey] = useState('')
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [importing, setImporting] = useState(false)
   const [updating, setUpdating] = useState(false)
@@ -66,11 +67,13 @@ const Profiles: React.FC = () => {
       url,
       useProxy,
       authToken: authToken || undefined,
-      userAgent: userAgent || undefined
+      userAgent: userAgent || undefined,
+      ageSecretKey: ageSecretKey || undefined
     })
     setUrl('')
     setAuthToken('')
     setUserAgent('')
+    setAgeSecretKey('')
     setImporting(false)
   }
   const pageRef = useRef<HTMLDivElement>(null)
@@ -273,9 +276,12 @@ const Profiles: React.FC = () => {
                       type: 'local',
                       file: 'proxies: []\nproxy-groups: []\nrules: []'
                     })
+                  } else if (key === 'import') {
+                    setOpenInfoImport(true)
                   }
                 }}
               >
+                <DropdownItem key="import">{t('profiles.import')}</DropdownItem>
                 <DropdownItem key="open">{t('profiles.open')}</DropdownItem>
                 <DropdownItem key="new">{t('profiles.new')}</DropdownItem>
               </DropdownMenu>
@@ -297,6 +303,15 @@ const Profiles: React.FC = () => {
                 placeholder={t('profiles.editInfo.userAgentPlaceholder')}
                 value={userAgent}
                 onValueChange={setUserAgent}
+                onKeyUp={handleInputKeyUp}
+                className="flex-1"
+              />
+              <Input
+                size="sm"
+                type="password"
+                placeholder={t('profiles.editInfo.ageSecretKeyPlaceholder')}
+                value={ageSecretKey}
+                onValueChange={setAgeSecretKey}
                 onKeyUp={handleInputKeyUp}
                 className="flex-1"
               />

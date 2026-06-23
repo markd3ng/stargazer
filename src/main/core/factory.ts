@@ -23,6 +23,8 @@ import {
 import { parse, stringify } from '../utils/yaml'
 import { deepMerge } from '../utils/merge'
 import { createLogger } from '../utils/logger'
+import { decryptAgeContent } from '../utils/age'
+import { DEFAULT_CONTROL_DNS, DEFAULT_CONTROL_SNIFF } from '../../shared/appConfig'
 
 const factoryLogger = createLogger('Factory')
 const SMART_OVERRIDE_ID = 'smart-core-override'
@@ -109,15 +111,25 @@ export async function generateProfile(): Promise<string | undefined> {
   const { current } = await getProfileConfig(true)
   const {
     diffWorkDir = false,
-    controlDns = true,
-    controlSniff = true,
+    controlDns = DEFAULT_CONTROL_DNS,
+    controlSniff = DEFAULT_CONTROL_SNIFF,
     useNameserverPolicy
   } = await getAppConfig()
+  const currentProfileItem = await getProfileItem(current)
+  const ageSecretKey = currentProfileItem?.ageSecretKey || ''
   const baseProfile = await getProfile(current)
   const overrideIds = await getOrderedOverrideIds(current)
-  const profileWithNormalOverride = await applyOverrides(baseProfile, overrideIds.normal)
+  const profileWithNormalOverride = await applyOverrides(
+    baseProfile,
+    overrideIds.normal,
+    ageSecretKey
+  )
   const profileWithRuleOverride = await applyRuleOverride(current, profileWithNormalOverride)
-  const currentProfile = await applyOverrides(profileWithRuleOverride, overrideIds.smart)
+  const currentProfile = await applyOverrides(
+    profileWithRuleOverride,
+    overrideIds.smart,
+    ageSecretKey
+  )
   let controledMihomoConfig = await getControledMihomoConfig()
 
   // 根据开关状态过滤控制配置
@@ -149,8 +161,9 @@ export async function generateProfile(): Promise<string | undefined> {
       addedProxyServerRouteExcludes
     )
   }
-
-  if (!['info', 'debug', 'warning', 'error', 'silent'].includes(profile['log-level'])) {
+  // 确保可以拿到基础日志信息
+  // 使用 debug 可以调试内核相关问题 `debug/pprof`
+  if (['info', 'debug'].includes(profile['log-level']) === false) {
     profile['log-level'] = 'info'
   }
   // 删除空的局域网允许列表，避免局域网访问异常
@@ -279,7 +292,8 @@ async function getOrderedOverrideIds(current: string | undefined): Promise<{
 
 async function applyOverrides(
   profile: IMihomoConfig,
-  overrideIds: string[]
+  overrideIds: string[],
+  ageSecretKey: string
 ): Promise<IMihomoConfig> {
   for (const ov of overrideIds) {
     const item = await getOverrideItem(ov)
@@ -289,7 +303,8 @@ async function applyOverrides(
         profile = runOverrideScript(profile, content, item)
         break
       case 'yaml': {
-        let patch = parse(content) || {}
+        const decryptedContent = await decryptAgeContent(content, ageSecretKey, `override "${ov}"`)
+        let patch = parse(decryptedContent) || {}
         if (typeof patch !== 'object') patch = {}
         profile = deepMerge(profile, patch, true)
         break

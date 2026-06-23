@@ -2,6 +2,23 @@ type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
 type CardStatus = 'col-span-2' | 'col-span-1' | 'hidden'
+type SiderCardKey =
+  | 'sysproxy'
+  | 'tun'
+  | 'profile'
+  | 'proxy'
+  | 'rule'
+  | 'resource'
+  | 'override'
+  | 'connection'
+  | 'mihomo'
+  | 'dns'
+  | 'sniff'
+  | 'log'
+  | 'substore'
+  | 'network'
+  | 'usage'
+type NetworkInfoCardKey = 'ip' | 'topology' | 'latency'
 type AppTheme = 'system' | 'light' | 'dark'
 type MihomoGroupType = 'Selector' | 'URLTest' | 'Fallback' | 'LoadBalance' | 'Relay'
 type Priority =
@@ -290,6 +307,9 @@ interface IAppConfig {
   tunCardStatus?: CardStatus
   usageCardStatus?: CardStatus
   githubToken?: string
+  gistAgeEncrypt?: boolean
+  gistAgeRecipient?: string
+  gistAgeSecretKey?: string
   autoQuitWithoutCore?: boolean
   autoQuitWithoutCoreDelay?: number
   mihomoCpuPriority?: Priority
@@ -301,6 +321,7 @@ interface IAppConfig {
   showCurrentProxyInTray: boolean
   enableTrafficLogger?: boolean
   siderOrder: string[]
+  lastSelectedSiderCard?: SiderCardKey
   siderWidth: number
   appTheme: AppTheme
   customTheme?: string
@@ -318,6 +339,7 @@ interface IAppConfig {
   delayTestTimeout?: number
   networkLatencyTargets?: INetworkLatencyTarget[]
   networkIPProvider?: 'ip.sb' | 'ipwho.is' | 'ipapi.is'
+  networkInfoCardOrder?: NetworkInfoCardKey[]
   subscriptionTimeout?: number
   encryptedPassword?: number[]
   controlDns?: boolean
@@ -533,4 +555,7 @@ interface IProfileItem {
   authToken?: string
   userAgent?: string
   fingerprint?: string
+  ageSecretKey?: string
+  updateTimeout?: number
+}
 }

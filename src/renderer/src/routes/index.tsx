@@ -14,6 +14,16 @@ import Resources from '@renderer/pages/resources'
 import DNS from '@renderer/pages/dns'
 import Sniffer from '@renderer/pages/sniffer'
 import Traffic from '@renderer/pages/traffic'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { getSiderCardRoute } from '@renderer/utils/sider'
+
+const HomeRedirect: React.FC = () => {
+  const { appConfig } = useAppConfig()
+
+  if (!appConfig) return null
+  return <Navigate to={getSiderCardRoute(appConfig.lastSelectedSiderCard)} replace />
+}
+
 const routes = [
   {
     path: '/network',
@@ -77,7 +87,7 @@ const routes = [
   },
   {
     path: '/',
-    element: <Navigate to="/proxies" />
+    element: <HomeRedirect />
   }
 ]
 
