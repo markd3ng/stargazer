@@ -1,6 +1,6 @@
 {
   "name": "stargazer",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "Star Gazer",
   "type": "module",
   "main": "./out/main/index.js",
