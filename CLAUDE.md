@@ -5,10 +5,10 @@
 
 ## 仓库
 
-| 角色 | 地址 | 默认分支 |
-|------|------|----------|
+| 角色     | 地址                                      | 默认分支     |
+| -------- | ----------------------------------------- | ------------ |
 | Upstream | `github.com:mihomo-party-org/clash-party` | `smart_core` |
-| Origin | `github.com:markd3ng/stargazer` | `smart_core` |
+| Origin   | `github.com:markd3ng/stargazer`           | `smart_core` |
 
 ## 技术栈
 
@@ -23,9 +23,9 @@
 
 ## 关键规则文件
 
-| 文件 | 内容 |
-|------|------|
-| [`AGENTS.md`](AGENTS.md) | 提交规范、版本号纪律、TDD、代码风格、IPC 协议、安全策略 |
+| 文件                                                           | 内容                                                             |
+| -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [`AGENTS.md`](AGENTS.md)                                       | 提交规范、版本号纪律、TDD、代码风格、IPC 协议、安全策略          |
 | [`docs/rules/upstream_merge.md`](docs/rules/upstream_merge.md) | **Upstream 合并流程** — 冲突分类、Fork DNA、逐文件解法、验证清单 |
 
 ## 合并 Upstream 前必读
@@ -33,8 +33,10 @@
 在合并 `upstream/smart_core` 之前，必须先阅读 [`docs/rules/upstream_merge.md`](docs/rules/upstream_merge.md)。
 
 核心规则：
+
 - **永远 `git merge`，禁止 `git rebase`**
 - **保护 Fork DNA** — 重命名（Star Gazer）、移除项（Sub-Store/Telegram/教程）、分支独有功能
+- **版本号同步 upstream** — `package.json` version 不得超过 upstream `smart_core`
 - 冲突按 A/B/C/D/E 五类处理，不能无脑取一边
 
 ## 目录结构

@@ -7,11 +7,13 @@
 **EVERY commit that changes user-facing behavior MUST include a corresponding `changelog.md` update in the SAME commit.**
 
 Before `git push`:
+
 1. Write a concise changelog entry under the current version heading in `changelog.md`
 2. Use format: `- description` under `## 新功能`, `## 修复`, or `## 性能优化`
 3. The changelog entry goes in the SAME commit as the code change
 
 Example:
+
 ```
 changelog.md:
 # 1.10.0
@@ -36,6 +38,7 @@ type: feat | fix | chore | refactor | perf
 
 - **DO NOT** change version number or create tags during development
 - **DO NOT** force-push tags
+- **DO NOT** bump this fork ahead of upstream — `package.json` version MUST stay synchronized with upstream `smart_core`
 - Version bump + tag happens ONCE when all tasks in a Phase are complete
 - Version format: `MAJOR.MINOR.PATCH` (semver)
 - After version bump commit, create tag matching `package.json` version
@@ -69,6 +72,7 @@ After release v1.11.0:
 ## Code Style & Architecture (Rule 7)
 
 ### File & Directory Conventions
+
 - File naming: `kebab-case` (e.g. `connection-table.tsx`, `proxy-item.tsx`)
 - One component per file, file named after the component
 - `src/renderer/src/components/` groups by domain: `proxies/`, `profiles/`, `settings/`, etc.
@@ -76,11 +80,13 @@ After release v1.11.0:
 - Pages: flat in `src/renderer/src/pages/`, named after the route (e.g. `connections.tsx`)
 
 ### Component Patterns
+
 - Function components + Hooks only. No class components.
 - Prefer Tailwind utility classes over custom CSS files.
 - Keep components focused — extract reusable logic into hooks.
 
 ### IPC Discipline
+
 - All IPC handlers registered centrally in `src/main/utils/ipc.ts` (flat map pattern).
 - **Before adding a new IPC channel**, register it in all three allowlists in `src/preload/index.ts`:
   - `validInvokeChannels` — for `invoke` calls
@@ -91,6 +97,7 @@ After release v1.11.0:
 ## Tech Stack Constraints (Rule 8)
 
 ### Allowed Libraries
+
 - **UI Framework**: HeroUI (`@heroui/react`) only. Do NOT add Ant Design, MUI, or any other UI framework.
 - **State Management**: SWR v2 + React Context only. Do NOT add Redux, Zustand, or other state managers.
 - **Animation**: framer-motion (already used). No additional animation libraries.
@@ -98,6 +105,7 @@ After release v1.11.0:
 - **Styling**: Tailwind CSS v4 only (zero-config via `@tailwindcss/vite`).
 
 ### Package Management
+
 - **pnpm only**. Do NOT commit `package-lock.json` or `yarn.lock`.
 - New dependency proposals MUST include:
   - The specific problem it solves
@@ -106,12 +114,14 @@ After release v1.11.0:
 - Prioritize pure JS/TS solutions over native modules.
 
 ### Electron Security (HARD REQUIREMENT)
+
 - Keep `contextIsolation: true` — never set to `false`.
 - Keep `nodeIntegration: false` — never set to `true`.
 - `sandbox: false` is allowed only for native modules (sysproxy-rs).
 - Preload script must use `contextBridge.exposeInMainWorld` — never expose `ipcRenderer` directly.
 
 ## TypeScript Strictness (Rule 9)
+
 - `tsconfig.json` MUST have `"strict": true` enabled.
 - ESLint rules:
   - `no-explicit-any`: **error** (not warn)
@@ -123,17 +133,20 @@ After release v1.11.0:
 ## Testing Strategy (Rule 10)
 
 ### Framework & Setup
+
 - **Vitest** is the test framework (Vite-native, aligned with the build toolchain).
 - Commands:
   - `pnpm test` — watch mode (development)
   - `pnpm test:run` — CI mode (single run)
 
 ### Coverage Priority (Phase 1)
+
 1. Utility functions in `src/**/utils/*.ts`
 2. IPC invocation layer (`src/renderer/src/utils/ipc.ts`)
 3. Shared logic (`src/shared/`)
 
 ### File Placement
+
 - Test files go in `__tests__/` subdirectory next to the source file:
   ```
   src/renderer/src/utils/
@@ -144,16 +157,19 @@ After release v1.11.0:
 ## Internationalization (Rule 11)
 
 ### Key Conventions
+
 - Format: `module.submodule.description` (e.g. `mihomo.error.coreStartFailed`, `common.error.initFailed`)
 - Supported languages (5): `zh-CN`, `zh-TW`, `en-US`, `ru-RU`, `fa-IR`
 - Default fallback: `en-US`
 
 ### Adding a Language
+
 1. Create JSON file in `src/renderer/src/locales/<locale>.json`
 2. Register in `src/shared/i18n.ts` resources
 3. Ensure all existing keys are translated (or at minimum fill `en-US` values as TODO)
 
 ### Rules
+
 - **NEVER** hardcode UI text in components — always use `t()` from react-i18next.
 - When adding/modifying a key, update ALL 5 locale files in the same commit.
 - Use `en-US` as the reference; other locales may lag with `// TODO` markers.
@@ -161,30 +177,36 @@ After release v1.11.0:
 ## Security Policy (Rule 12)
 
 ### IPC Security
+
 - Three allowlists in `src/preload/index.ts` are the gate — every channel must be listed before use (see Rule 7 IPC Discipline).
 - All IPC handler arguments MUST be type-validated. Never pass input directly to `eval()`, `exec()`, or shell commands.
 
 ### External Links
+
 - Renderer MUST open external URLs via `shell.openExternal` (IPC to main process).
 - **NEVER** use `window.open()` or direct navigation for external URLs.
 
 ### CSP & Content Security
+
 - Modify CSP headers in `index.html` / `floating.html` only with security review.
 - Keep `'unsafe-inline'` only for Tailwind (`style-src`).
 - Do NOT add `'unsafe-eval'` or relax `script-src`.
 
 ### Dependency Security
+
 - Before adding a new npm dependency, check for known vulnerabilities (`pnpm audit`).
 - Prefer well-maintained libraries with >weekly downloads and <30d since last publish.
 
 ## Release & Build Process (Rule 13)
 
 ### CI/CD
+
 - GitHub Actions: `v*` tag push triggers full build (Windows x64+arm64, Linux x64+arm64, macOS arm64).
 - Manual dispatch publishes to `dev` prerelease.
 - No other trigger patterns.
 
 ### Pre-release Checklist
+
 - [ ] Version bumped in `package.json` (semver)
 - [ ] `changelog.md` complete for this version
 - [ ] `pnpm review` passes (format + lint + typecheck)
@@ -193,6 +215,7 @@ After release v1.11.0:
 - [ ] Release notes drafted
 
 ### Auto-Updater
+
 - Keep the custom update mechanism (`src/main/resolve/autoUpdater.ts` + `scripts/updater.mjs`).
 - Do NOT introduce `electron-updater` or other update frameworks.
 - `latest.yml` is generated by `scripts/updater.mjs` and published alongside release artifacts.
@@ -220,17 +243,17 @@ After release v1.11.0:
 
 ## File Locations
 
-| Purpose | Path |
-|---|---|
-| Changelog | `changelog.md` |
-| Build Config | `electron-builder.yml` |
-| CI/CD | `.github/workflows/build.yml` |
-| Package | `package.json` |
-| Types | `src/shared/types.d.ts` |
-| Main Entry | `src/main/index.ts` |
-| Config Template | `src/main/utils/template.ts` |
-| Locales | `src/renderer/src/locales/*.json` |
-| IPC Handlers | `src/main/utils/ipc.ts` |
-| Preload Whitelist | `src/preload/index.ts` |
-| Auto-Updater | `src/main/resolve/autoUpdater.ts` |
-| Tests | `src/**/__tests__/*.test.ts` |
+| Purpose           | Path                              |
+| ----------------- | --------------------------------- |
+| Changelog         | `changelog.md`                    |
+| Build Config      | `electron-builder.yml`            |
+| CI/CD             | `.github/workflows/build.yml`     |
+| Package           | `package.json`                    |
+| Types             | `src/shared/types.d.ts`           |
+| Main Entry        | `src/main/index.ts`               |
+| Config Template   | `src/main/utils/template.ts`      |
+| Locales           | `src/renderer/src/locales/*.json` |
+| IPC Handlers      | `src/main/utils/ipc.ts`           |
+| Preload Whitelist | `src/preload/index.ts`            |
+| Auto-Updater      | `src/main/resolve/autoUpdater.ts` |
+| Tests             | `src/**/__tests__/*.test.ts`      |
